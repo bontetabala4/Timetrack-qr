@@ -1,18 +1,37 @@
-import { UserSchema } from '#database/schema'
-import hash from '@adonisjs/core/services/hash'
-import { compose } from '@adonisjs/core/helpers'
-import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
-import { type AccessToken, DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
+import { DateTime } from 'luxon'
+import { BaseModel, column } from '@adonisjs/lucid/orm'
 
-export default class User extends compose(UserSchema, withAuthFinder(hash)) {
-  static accessTokens = DbAccessTokensProvider.forModel(User)
-  declare currentAccessToken?: AccessToken
+export type UserRole = 'admin' | 'user'
+export type UserStatus = 'active' | 'suspended'
 
-  get initials() {
-    const [first, last] = this.fullName ? this.fullName.split(' ') : this.email.split('@')
-    if (first && last) {
-      return `${first.charAt(0)}${last.charAt(0)}`.toUpperCase()
-    }
-    return `${first.slice(0, 2)}`.toUpperCase()
-  }
+export default class User extends BaseModel {
+  @column({ isPrimary: true })
+  declare id: number
+
+  @column()
+  declare fullName: string
+
+  @column()
+  declare email: string
+
+  @column({ serializeAs: null })
+  declare password: string
+
+  @column()
+  declare role: UserRole
+
+  @column()
+  declare status: UserStatus
+
+  @column()
+  declare department: string | null
+
+  @column()
+  declare phone: string | null
+
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
 }
