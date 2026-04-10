@@ -33,18 +33,32 @@ export class AuthAccessTokenSchema extends BaseModel {
 }
 
 export class UserSchema extends BaseModel {
-  static $columns = ['createdAt', 'email', 'fullName', 'id', 'password', 'updatedAt'] as const
+  static $columns = ['authProvider', 'avatarUrl', 'createdAt', 'department', 'email', 'fullName', 'googleId', 'id', 'password', 'phone', 'role', 'status', 'updatedAt'] as const
   $columns = UserSchema.$columns
+  @column()
+  declare authProvider: any
+  @column()
+  declare avatarUrl: string | null
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
   @column()
+  declare department: string | null
+  @column()
   declare email: string
   @column()
-  declare fullName: string | null
+  declare fullName: string
+  @column()
+  declare googleId: string | null
   @column({ isPrimary: true })
   declare id: number
   @column({ serializeAs: null })
-  declare password: string
+  declare password: string | null
+  @column()
+  declare phone: string | null
+  @column()
+  declare role: any
+  @column()
+  declare status: any
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
 }
