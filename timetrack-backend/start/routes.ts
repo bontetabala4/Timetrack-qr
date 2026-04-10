@@ -7,32 +7,21 @@
 |
 */
 
-import { middleware } from '#start/kernel'
 import router from '@adonisjs/core/services/router'
-import { controllers } from '#generated/controllers'
+import { middleware } from '#start/kernel'
 const AuthController = () => import('#controllers/auth_controller')
+const GoogleAuthController = () => import('#controllers/google_auth_controller')
 
-router.get('/', () => {
-  return { hello: 'world' }
+router.get('/', async () => {
+  return { message: 'Bienvenue sur l\'API de Timetrack QR'   }
 })
+router.group(() => {
+  router.post('/register', [AuthController, 'register'])
+  router.post('/login', [AuthController, 'login'])
 
-router
-  .group(() => {
-    router
-      .group(() => {
-        router.post('signup', [controllers.NewAccount, 'store'])
-        router.post('login', [controllers.AccessToken, 'store'])
-        router.post('logout', [controllers.AccessToken, 'destroy']).use(middleware.auth())
-      })
-      .prefix('auth')
-      .as('auth')
+  router.get('/me', [AuthController, 'me']).use(middleware.auth({ guards: ['api'] }))
+  router.post('/logout', [AuthController, 'logout']).use(middleware.auth({ guards: ['api'] }))
 
-    router
-      .group(() => {
-        router.get('/profile', [controllers.Profile, 'show'])
-      })
-      .prefix('account')
-      .as('profile')
-      .use(middleware.auth())
-  })
-  .prefix('/api/v1')
+  router.get('/google/redirect', [GoogleAuthController, 'redirect'])
+  router.get('/google/callback', [GoogleAuthController, 'callback'])
+}).prefix('/api/auth')
