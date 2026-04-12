@@ -12,4 +12,12 @@ export interface ApiDefinition {
     redirect: typeof routes['google_auth.redirect']
     callback: typeof routes['google_auth.callback']
   }
+  attendances: {
+    scan: typeof routes['attendances.scan']
+    myHistory: typeof routes['attendances.my_history']
+    myToday: typeof routes['attendances.my_today']
+  }
+  users: {
+    updateMe: typeof routes['users.update_me']
+  }
 }

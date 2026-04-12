@@ -42,6 +42,30 @@ const routes = {
     tokens: [{"old":"/api/auth/google/callback","type":0,"val":"api","end":""},{"old":"/api/auth/google/callback","type":0,"val":"auth","end":""},{"old":"/api/auth/google/callback","type":0,"val":"google","end":""},{"old":"/api/auth/google/callback","type":0,"val":"callback","end":""}],
     types: placeholder as Registry['google_auth.callback']['types'],
   },
+  'attendances.scan': {
+    methods: ["POST"],
+    pattern: '/api/attendances/scan',
+    tokens: [{"old":"/api/attendances/scan","type":0,"val":"api","end":""},{"old":"/api/attendances/scan","type":0,"val":"attendances","end":""},{"old":"/api/attendances/scan","type":0,"val":"scan","end":""}],
+    types: placeholder as Registry['attendances.scan']['types'],
+  },
+  'attendances.my_history': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/attendances/me/history',
+    tokens: [{"old":"/api/attendances/me/history","type":0,"val":"api","end":""},{"old":"/api/attendances/me/history","type":0,"val":"attendances","end":""},{"old":"/api/attendances/me/history","type":0,"val":"me","end":""},{"old":"/api/attendances/me/history","type":0,"val":"history","end":""}],
+    types: placeholder as Registry['attendances.my_history']['types'],
+  },
+  'attendances.my_today': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/attendances/me/today',
+    tokens: [{"old":"/api/attendances/me/today","type":0,"val":"api","end":""},{"old":"/api/attendances/me/today","type":0,"val":"attendances","end":""},{"old":"/api/attendances/me/today","type":0,"val":"me","end":""},{"old":"/api/attendances/me/today","type":0,"val":"today","end":""}],
+    types: placeholder as Registry['attendances.my_today']['types'],
+  },
+  'users.update_me': {
+    methods: ["PUT"],
+    pattern: '/api/users/me',
+    tokens: [{"old":"/api/users/me","type":0,"val":"api","end":""},{"old":"/api/users/me","type":0,"val":"users","end":""},{"old":"/api/users/me","type":0,"val":"me","end":""}],
+    types: placeholder as Registry['users.update_me']['types'],
+  },
 } as const satisfies Record<string, AdonisEndpoint>
 
 export { routes }

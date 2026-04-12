@@ -79,4 +79,52 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/google_auth_controller').default['callback']>>>
     }
   }
+  'attendances.scan': {
+    methods: ["POST"]
+    pattern: '/api/attendances/scan'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/scan_attendance_validator').scanAttendanceValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/scan_attendance_validator').scanAttendanceValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/attendances_controller').default['scan']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/attendances_controller').default['scan']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'attendances.my_history': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/attendances/me/history'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/attendances_controller').default['myHistory']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/attendances_controller').default['myHistory']>>>
+    }
+  }
+  'attendances.my_today': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/attendances/me/today'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/attendances_controller').default['myToday']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/attendances_controller').default['myToday']>>>
+    }
+  }
+  'users.update_me': {
+    methods: ["PUT"]
+    pattern: '/api/users/me'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/update_me_validator').updateMeValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/update_me_validator').updateMeValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/users_controller').default['updateMe']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/users_controller').default['updateMe']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
 }

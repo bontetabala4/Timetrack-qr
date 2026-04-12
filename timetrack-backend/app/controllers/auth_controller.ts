@@ -66,13 +66,25 @@ export default class AuthController {
     }
   }
 
-  async me({ auth, response }: HttpContext) {
-    await auth.authenticateUsing(['api'])
+async me({ auth, response }: HttpContext) {
+  await auth.authenticateUsing(['api'])
 
-    return response.ok({
-      user: auth.user,
-    })
-  }
+  return response.ok({
+    user: {
+      id: auth.user!.id,
+      fullName: auth.user!.fullName,
+      email: auth.user!.email,
+      role: auth.user!.role,
+      status: auth.user!.status,
+      department: auth.user!.department,
+      phone: auth.user!.phone,
+      address: auth.user!.address,
+      employeeId: auth.user!.employeeId,
+      avatarUrl: auth.user!.avatarUrl,
+      authProvider: auth.user!.authProvider,
+    },
+  })
+}
 
   async logout({ auth, response }: HttpContext) {
     try {

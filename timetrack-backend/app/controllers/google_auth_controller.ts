@@ -1,5 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
+import env from '#start/env'
 
 type GoogleAuthContext = HttpContext & { ally: any }
 
@@ -11,19 +12,23 @@ export default class GoogleAuthController {
     })
   }
 
-  async callback({ ally, response, request }: GoogleAuthContext) {
+  async callback({ ally, response }: GoogleAuthContext) {
     const google = ally.use('google')
 
     if (google.accessDenied()) {
-      return response.redirect().toPath('/?error=google_access_denied')
+      return response.redirect().toPath(`${env.get('USER_FRONTEND_URL')}?error=google_access_denied`)
     }
 
     if (google.stateMisMatch()) {
-      return response.redirect().toPath('/?error=google_state_mismatch')
+      return response.redirect().toPath(`${env.get('USER_FRONTEND_URL')}?error=google_state_mismatch`)
     }
 
     if (google.hasError()) {
-      return response.redirect().toPath(`/?error=${encodeURIComponent(google.getError() || 'google_error')}`)
+      return response.redirect().toPath(
+        `${env.get('USER_FRONTEND_URL')}?error=${encodeURIComponent(
+          google.getError() || 'google_error'
+        )}`
+      )
     }
 
     const googleUser = await google.user()
@@ -52,19 +57,17 @@ export default class GoogleAuthController {
     }
 
     if (user.status !== 'active') {
-      return response.redirect().toPath('/?error=account_suspended')
+      return response.redirect().toPath(`${env.get('USER_FRONTEND_URL')}?error=account_suspended`)
     }
 
     const token = await User.accessTokens.create(user, ['*'], {
       name: 'google-login-token',
     })
 
-    const frontendUrl = request.completeUrl().includes('localhost')
-      ? 'http://localhost:5173'
-      : process.env.FRONTEND_URL || 'http://localhost:5173'
-
     return response.redirect().toPath(
-      `${frontendUrl}/auth/callback?token=${encodeURIComponent(token.value!.release())}&role=${user.role}`
+      `${env.get('USER_FRONTEND_URL')}/auth/callback?token=${encodeURIComponent(
+        token.value!.release()
+      )}`
     )
   }
 }

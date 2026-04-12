@@ -7,6 +7,31 @@
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
+export class AttendanceSchema extends BaseModel {
+  static $columns = ['attendanceDate', 'checkInTime', 'checkOutTime', 'createdAt', 'id', 'lateMinutes', 'scanCode', 'status', 'updatedAt', 'userId'] as const
+  $columns = AttendanceSchema.$columns
+  @column.date()
+  declare attendanceDate: DateTime
+  @column.dateTime()
+  declare checkInTime: DateTime | null
+  @column.dateTime()
+  declare checkOutTime: DateTime | null
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare lateMinutes: number
+  @column()
+  declare scanCode: string | null
+  @column()
+  declare status: any
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare userId: number
+}
+
 export class AuthAccessTokenSchema extends BaseModel {
   static $columns = ['abilities', 'createdAt', 'expiresAt', 'hash', 'id', 'lastUsedAt', 'name', 'tokenableId', 'type', 'updatedAt'] as const
   $columns = AuthAccessTokenSchema.$columns
@@ -33,8 +58,10 @@ export class AuthAccessTokenSchema extends BaseModel {
 }
 
 export class UserSchema extends BaseModel {
-  static $columns = ['authProvider', 'avatarUrl', 'createdAt', 'department', 'email', 'fullName', 'googleId', 'id', 'password', 'phone', 'role', 'status', 'updatedAt'] as const
+  static $columns = ['address', 'authProvider', 'avatarUrl', 'createdAt', 'department', 'email', 'employeeId', 'fullName', 'googleId', 'id', 'password', 'phone', 'role', 'status', 'updatedAt'] as const
   $columns = UserSchema.$columns
+  @column()
+  declare address: string | null
   @column()
   declare authProvider: any
   @column()
@@ -45,6 +72,8 @@ export class UserSchema extends BaseModel {
   declare department: string | null
   @column()
   declare email: string
+  @column()
+  declare employeeId: string | null
   @column()
   declare fullName: string
   @column()
