@@ -10,5 +10,7 @@ export const controllers = {
   GoogleAuth: () => import('#controllers/google_auth_controller'),
   NewAccount: () => import('#controllers/new_account_controller'),
   Profile: () => import('#controllers/profile_controller'),
+  QrCodes: () => import('#controllers/qr_codes_controller'),
+  Settings: () => import('#controllers/settingscontroller'),
   Users: () => import('#controllers/users_controller'),
 }

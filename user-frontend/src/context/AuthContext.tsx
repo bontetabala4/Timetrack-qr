@@ -26,10 +26,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     const bootstrap = async () => {
       const storedToken = localStorage.getItem(AUTH_TOKEN_STORAGE_KEY)
+      const storedUser = localStorage.getItem(AUTH_USER_STORAGE_KEY)
 
       if (!storedToken) return
 
       try {
+        if (storedUser) {
+          setUser(JSON.parse(storedUser) as BackendUser)
+        }
+
         const { user } = await fetchCurrentUser(storedToken)
         setUser(user)
         setToken(storedToken)
@@ -42,7 +47,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
     }
 
-    bootstrap()
+    void bootstrap()
   }, [])
 
   const setAuthenticatedUser = (
@@ -53,7 +58,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setToken(accessToken)
 
     if (authenticatedUser) {
-      localStorage.setItem(AUTH_USER_STORAGE_KEY, JSON.stringify(authenticatedUser))
+      localStorage.setItem(
+        AUTH_USER_STORAGE_KEY,
+        JSON.stringify(authenticatedUser)
+      )
     } else {
       localStorage.removeItem(AUTH_USER_STORAGE_KEY)
     }

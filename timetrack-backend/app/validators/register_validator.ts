@@ -8,5 +8,13 @@ export const registerValidator = vine.compile(
     role: vine.enum(['admin', 'user']).optional(),
     department: vine.string().trim().maxLength(120).optional(),
     phone: vine.string().trim().maxLength(30).optional(),
+
+    organizationName: vine.string().trim().minLength(2).maxLength(150).optional(),
+    organizationType: vine
+      .enum(['entreprise', 'ecole', 'universite', 'institution', 'ong', 'autre'])
+      .optional(),
+    organizationEmail: vine.string().trim().email().optional(),
+    organizationPhone: vine.string().trim().maxLength(30).optional(),
+    organizationAddress: vine.string().trim().maxLength(255).optional(),
   })
 )

@@ -1,64 +1,37 @@
-import { History, LogOut, QrCode, User } from 'lucide-react'
-import { NavLink, useNavigate } from 'react-router-dom'
-import { useAuth } from '../../hooks/useAuth'
-import { useToast } from '../../hooks/useToast'
+import { House, QrCode, History, User } from 'lucide-react'
+import { NavLink } from 'react-router-dom'
 
 export default function UserBottomNav() {
-  const navigate = useNavigate()
-  const { logout } = useAuth()
-  const { showToast } = useToast()
-
-  const handleLogout = async () => {
-    await logout()
-    showToast('Déconnexion réussie', 'success')
-    navigate('/')
-  }
+  const navClass = ({ isActive }: { isActive: boolean }) =>
+    `flex flex-col items-center justify-center gap-1 rounded-2xl px-3 py-2 text-xs font-medium transition ${
+      isActive
+        ? 'bg-emerald-500 text-slate-950'
+        : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+    }`
 
   return (
-    <nav className="fixed bottom-5 left-1/2 z-20 flex w-[calc(100%-1rem)] max-w-xl -translate-x-1/2 items-center justify-around rounded-[1.75rem] border border-white/10 bg-slate-950/70 px-4 py-4 shadow-2xl backdrop-blur-2xl sm:w-[calc(100%-2rem)]">
-      <NavLink
-        to="/scan"
-        className={({ isActive }) =>
-          `flex flex-col items-center gap-2 text-sm ${
-            isActive ? 'text-blue-400' : 'text-slate-400'
-          }`
-        }
-      >
-        <QrCode size={24} />
-        <span>Scan</span>
-      </NavLink>
+    <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-white/10 bg-slate-950/95 px-3 py-3 backdrop-blur-xl">
+      <div className="mx-auto grid max-w-md grid-cols-4 gap-2">
+        <NavLink to="/home" className={navClass}>
+          <House size={18} />
+          <span>Accueil</span>
+        </NavLink>
 
-      <NavLink
-        to="/history"
-        className={({ isActive }) =>
-          `flex flex-col items-center gap-2 text-sm ${
-            isActive ? 'text-blue-400' : 'text-slate-400'
-          }`
-        }
-      >
-        <History size={24} />
-        <span>Historique</span>
-      </NavLink>
+        <NavLink to="/scan" className={navClass}>
+          <QrCode size={18} />
+          <span>Scan</span>
+        </NavLink>
 
-      <NavLink
-        to="/profile"
-        className={({ isActive }) =>
-          `flex flex-col items-center gap-2 text-sm ${
-            isActive ? 'text-blue-400' : 'text-slate-400'
-          }`
-        }
-      >
-        <User size={24} />
-        <span>Profil</span>
-      </NavLink>
+        <NavLink to="/history" className={navClass}>
+          <History size={18} />
+          <span>Historique</span>
+        </NavLink>
 
-      <button
-        onClick={handleLogout}
-        className="flex flex-col items-center gap-2 text-sm text-slate-400 transition hover:text-red-400"
-      >
-        <LogOut size={24} />
-        <span>Quitter</span>
-      </button>
+        <NavLink to="/profile" className={navClass}>
+          <User size={18} />
+          <span>Profil</span>
+        </NavLink>
+      </div>
     </nav>
   )
 }

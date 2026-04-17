@@ -4,3 +4,59 @@ body {
   margin: 0;
   font-family: Inter, system-ui, sans-serif;
 }
+
+:root {
+  --bg-main: #020617;
+  --bg-card: rgba(255, 255, 255, 0.05);
+  --bg-soft: rgba(15, 23, 42, 0.75);
+  --text-main: #ffffff;
+  --text-muted: #cbd5e1;
+  --border-main: rgba(255, 255, 255, 0.1);
+  --accent: #10b981;
+  --accent-text: #0f172a;
+  --danger-soft: rgba(239, 68, 68, 0.12);
+  --danger-text: #f87171;
+}
+
+html.light {
+  --bg-main: #f8fafc;
+  --bg-card: rgba(255, 255, 255, 0.96);
+  --bg-soft: rgba(226, 232, 240, 0.9);
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --border-main: rgba(15, 23, 42, 0.12);
+  --accent: #10b981;
+  --accent-text: #ffffff;
+  --danger-soft: rgba(239, 68, 68, 0.1);
+  --danger-text: #dc2626;
+}
+
+.user-theme-bg {
+  background: var(--bg-main);
+  color: var(--text-main);
+}
+
+.user-theme-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-main);
+  color: var(--text-main);
+}
+
+.user-theme-soft {
+  background: var(--bg-soft);
+  color: var(--text-main);
+}
+
+.user-theme-muted {
+  color: var(--text-muted);
+}
+
+.user-theme-button {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+.user-theme-danger {
+  background: var(--danger-soft);
+  color: var(--danger-text);
+}

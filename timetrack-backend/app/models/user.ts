@@ -5,8 +5,9 @@ import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import Attendance from '#models/attendance'
-import type { HasMany } from '@adonisjs/lucid/types/relations'
-import { hasMany } from '@adonisjs/lucid/orm'
+import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
+import { belongsTo, hasMany } from '@adonisjs/lucid/orm'
+import Organization from '#models/organization'
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['email'],
@@ -65,6 +66,12 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
   @hasMany(() => Attendance)
   declare attendances: HasMany<typeof Attendance>
+
+  @column({ columnName: 'organization_id' })
+  declare organizationId: number | null
+
+  @belongsTo(() => Organization)
+  declare organization: BelongsTo<typeof Organization>
 
   static accessTokens = DbAccessTokensProvider.forModel(User, {
     expiresIn: '30 days',

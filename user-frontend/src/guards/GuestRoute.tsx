@@ -1,15 +1,20 @@
+import type { ReactNode } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 
-export default function GuestRoute({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-  const { user, isAuthenticated } = useAuth()
+type GuestRouteProps = {
+  children: ReactNode
+}
 
-  if (isAuthenticated && user) {
-    return <Navigate to="/scan" replace />
+export default function GuestRoute({ children }: GuestRouteProps) {
+  const { user, isAuthenticated, token } = useAuth()
+
+  if (isAuthenticated && token && user) {
+    if (user.role === 'admin') {
+      return <Navigate to="/admin/dashboard" replace />
+    }
+
+    return <Navigate to="/home" replace />
   }
 
   return <>{children}</>

@@ -69,5 +69,7 @@ export default class GoogleAuthController {
         token.value!.release()
       )}`
     )
+
+    
   }
 }

@@ -31,6 +31,30 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['login']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'auth.forgot_password': {
+    methods: ["POST"]
+    pattern: '/api/auth/forgot-password'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['forgotPassword']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['forgotPassword']>>>
+    }
+  }
+  'auth.reset_password': {
+    methods: ["POST"]
+    pattern: '/api/auth/reset-password'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['resetPassword']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['resetPassword']>>>
+    }
+  }
   'auth.me': {
     methods: ["GET","HEAD"]
     pattern: '/api/auth/me'
@@ -115,6 +139,114 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/attendances_controller').default['myToday']>>>
     }
   }
+  'users.dashboard': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/admin/dashboard'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/users_controller').default['dashboard']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/users_controller').default['dashboard']>>>
+    }
+  }
+  'users.notifications': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/admin/notifications'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/users_controller').default['notifications']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/users_controller').default['notifications']>>>
+    }
+  }
+  'users.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/admin/users'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/users_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/users_controller').default['index']>>>
+    }
+  }
+  'users.show': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/admin/users/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/users_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/users_controller').default['show']>>>
+    }
+  }
+  'users.update': {
+    methods: ["PUT"]
+    pattern: '/api/admin/users/:id'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/admin_update_user_validator').adminUpdateUserValidator)>>
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/admin_update_user_validator').adminUpdateUserValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/users_controller').default['update']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/users_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'users.destroy': {
+    methods: ["DELETE"]
+    pattern: '/api/admin/users/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/users_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/users_controller').default['destroy']>>>
+    }
+  }
+  'users.store': {
+    methods: ["POST"]
+    pattern: '/api/admin/users'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/admin_create_user_validator').adminCreateUserValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/admin_create_user_validator').adminCreateUserValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/users_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/users_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'users.reports': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/admin/reports'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/users_controller').default['reports']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/users_controller').default['reports']>>>
+    }
+  }
+  'users.dashboard_charts': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/admin/dashboard/charts'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/users_controller').default['dashboardCharts']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/users_controller').default['dashboardCharts']>>>
+    }
+  }
   'users.update_me': {
     methods: ["PUT"]
     pattern: '/api/users/me'
@@ -125,6 +257,54 @@ export interface Registry {
       query: ExtractQuery<InferInput<(typeof import('#validators/update_me_validator').updateMeValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/users_controller').default['updateMe']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/users_controller').default['updateMe']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'qr_codes.current': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/qrcodes/current'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/qr_codes_controller').default['current']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/qr_codes_controller').default['current']>>>
+    }
+  }
+  'qr_codes.generate': {
+    methods: ["POST"]
+    pattern: '/api/qrcodes/generate'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/qr_codes_controller').default['generate']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/qr_codes_controller').default['generate']>>>
+    }
+  }
+  'settings.change_password': {
+    methods: ["POST"]
+    pattern: '/api/settings/change-password'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/change_password_validator').changePasswordValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/change_password_validator').changePasswordValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/settingscontroller').default['changePassword']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/settingscontroller').default['changePassword']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'settings.upload_avatar': {
+    methods: ["POST"]
+    pattern: '/api/settings/avatar'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/settingscontroller').default['uploadAvatar']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/settingscontroller').default['uploadAvatar']>>>
     }
   }
 }

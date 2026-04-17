@@ -12,7 +12,20 @@ export type BackendUser = {
   employeeId?: string | null
   avatarUrl?: string | null
   authProvider?: string
+  organizationId?: number | null
 }
+
+
+type LoginPayload = {
+  email: string
+  password: string
+}
+
+type LoginResponse = {
+    user: BackendUser
+    token: string
+}
+
 
 export type MeResponse = {
   user: BackendUser
@@ -161,6 +174,26 @@ export async function fetchMyToday(token: string): Promise<TodayAttendanceRespon
 
   if (!response.ok) {
     throw new Error(data?.message || 'Impossible de récupérer la présence du jour')
+  }
+
+  return data
+}
+
+export async function loginToBackend(
+  payload: LoginPayload
+): Promise<LoginResponse> {
+  const response = await fetch('http://localhost:3333/api/auth/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+
+  const data = await response.json()
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Erreur de connexion')
   }
 
   return data

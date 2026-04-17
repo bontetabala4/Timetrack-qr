@@ -57,8 +57,78 @@ export class AuthAccessTokenSchema extends BaseModel {
   declare updatedAt: DateTime | null
 }
 
+export class NotificationSchema extends BaseModel {
+  static $columns = ['createdAt', 'id', 'message', 'organizationId', 'type'] as const
+  $columns = NotificationSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare message: string
+  @column()
+  declare organizationId: number
+  @column()
+  declare type: string
+}
+
+export class OrganizationSchema extends BaseModel {
+  static $columns = ['address', 'createdAt', 'email', 'id', 'name', 'phone', 'type', 'updatedAt'] as const
+  $columns = OrganizationSchema.$columns
+  @column()
+  declare address: string | null
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare email: string | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare name: string
+  @column()
+  declare phone: string | null
+  @column()
+  declare type: any
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
+export class PasswordResetTokenSchema extends BaseModel {
+  static $columns = ['createdAt', 'expiresAt', 'id', 'token', 'userId'] as const
+  $columns = PasswordResetTokenSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column.dateTime()
+  declare expiresAt: DateTime
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare token: string
+  @column()
+  declare userId: number
+}
+
+export class QrSessionSchema extends BaseModel {
+  static $columns = ['code', 'createdAt', 'expiresAt', 'id', 'isActive', 'organizationId', 'updatedAt'] as const
+  $columns = QrSessionSchema.$columns
+  @column()
+  declare code: string
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column.dateTime()
+  declare expiresAt: DateTime
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare isActive: boolean
+  @column()
+  declare organizationId: number
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
 export class UserSchema extends BaseModel {
-  static $columns = ['address', 'authProvider', 'avatarUrl', 'createdAt', 'department', 'email', 'employeeId', 'fullName', 'googleId', 'id', 'password', 'phone', 'role', 'status', 'updatedAt'] as const
+  static $columns = ['address', 'authProvider', 'avatarUrl', 'createdAt', 'department', 'email', 'employeeId', 'fullName', 'googleId', 'id', 'organizationId', 'password', 'phone', 'role', 'status', 'updatedAt'] as const
   $columns = UserSchema.$columns
   @column()
   declare address: string | null
@@ -80,6 +150,8 @@ export class UserSchema extends BaseModel {
   declare googleId: string | null
   @column({ isPrimary: true })
   declare id: number
+  @column()
+  declare organizationId: number | null
   @column({ serializeAs: null })
   declare password: string | null
   @column()

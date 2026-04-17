@@ -1,193 +1,202 @@
-import { motion } from 'motion/react'
-import {
-  CalendarDays,
-  CheckCircle2,
-  Clock3,
-  History as HistoryIcon,
-} from 'lucide-react'
 import { useEffect, useState } from 'react'
 import UserLayout from '../../components/layout/UserLayout'
 import { useAuth } from '../../hooks/useAuth'
 import { useToast } from '../../hooks/useToast'
-import { fetchMyHistory, type AttendanceItem } from '../../services/auth'
+import {
+  fetchAttendanceHistory,
+  fetchTodayAttendance,
+  type AttendanceHistoryItem,
+} from '../../services/attendance'
 
 export default function History() {
   const { token } = useAuth()
   const { showToast } = useToast()
 
-  const [items, setItems] = useState<AttendanceItem[]>([])
+  const [history, setHistory] = useState<AttendanceHistoryItem[]>([])
+  const [todayAttendance, setTodayAttendance] =
+    useState<AttendanceHistoryItem | null>(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    const loadHistory = async () => {
-      if (!token) return
+  const loadHistory = async () => {
+    if (!token) return
 
-      try {
-        setLoading(true)
-        const data = await fetchMyHistory(token)
-        setItems(data.data)
-      } catch {
-        showToast("Impossible de charger l'historique", 'error')
-      } finally {
-        setLoading(false)
-      }
+    try {
+      setLoading(true)
+
+      const [historyData, todayData] = await Promise.all([
+        fetchAttendanceHistory(token),
+        fetchTodayAttendance(token),
+      ])
+
+      setHistory(historyData.items)
+      setTodayAttendance(todayData.attendance)
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Erreur lors du chargement de l'historique"
+      showToast(message, 'error')
+    } finally {
+      setLoading(false)
     }
+  }
 
-    loadHistory()
-  }, [token, showToast])
+  useEffect(() => {
+    void loadHistory()
+  }, [token])
 
-  const presentCount = items.filter((item) => item.status === 'present').length
-  const lateCount = items.filter((item) => item.status === 'late').length
-  const absentCount = items.filter((item) => item.status === 'absent').length
+  const formatDate = (value: string | null) =>
+    value
+      ? new Date(value).toLocaleDateString('fr-FR', {
+          day: '2-digit',
+          month: 'long',
+          year: 'numeric',
+        })
+      : '--'
 
-  const formatDate = (date: string) =>
-    new Date(date).toLocaleDateString('fr-FR', {
-      day: '2-digit',
-      month: 'long',
-      year: 'numeric',
-    })
-
-  const formatTime = (date: string | null) =>
-    date
-      ? new Date(date).toLocaleTimeString('fr-FR', {
+  const formatTime = (value: string | null) =>
+    value
+      ? new Date(value).toLocaleTimeString('fr-FR', {
           hour: '2-digit',
           minute: '2-digit',
         })
       : '--:--'
 
-  const labelStatus = (status: AttendanceItem['status']) => {
+  const getStatusLabel = (status: AttendanceHistoryItem['status']) => {
     if (status === 'present') return 'Présent'
     if (status === 'late') return 'Retard'
     return 'Absent'
   }
 
+  const getStatusClasses = (status: AttendanceHistoryItem['status']) => {
+    if (status === 'present') {
+      return 'border-emerald-500/20 bg-emerald-500/10 text-emerald-400'
+    }
+
+    if (status === 'late') {
+      return 'border-amber-500/20 bg-amber-500/10 text-amber-400'
+    }
+
+    return 'border-red-500/20 bg-red-500/10 text-red-400'
+  }
+
   return (
     <UserLayout>
-      <motion.header
-        initial={{ opacity: 0, y: -18 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35 }}
-        className="mb-6"
-      >
-        <div className="flex items-center gap-3">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-lg shadow-blue-900/40">
-            <HistoryIcon size={26} />
-          </div>
-
-          <div>
-            <h1 className="text-2xl font-bold sm:text-3xl">Mon historique</h1>
-            <p className="mt-1 text-sm text-slate-300">
-              Consulte tes présences récentes
-            </p>
-          </div>
+      <section className="space-y-6">
+        <div className="user-theme-card rounded-3xl p-6 shadow-2xl backdrop-blur-xl transition-colors duration-300">
+          <h1 className="text-2xl font-bold">Historique de présence</h1>
+          <p className="user-theme-muted mt-2 text-sm">
+            Consulte tes présences récentes et ton statut du jour.
+          </p>
         </div>
-      </motion.header>
 
-      <section className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <motion.article
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="rounded-2xl border border-white/10 bg-white/10 p-4 text-center backdrop-blur-xl"
-        >
-          <p className="text-xs text-slate-300">Présents</p>
-          <p className="mt-2 text-2xl font-bold text-emerald-400">{presentCount}</p>
-        </motion.article>
+        <section className="user-theme-card rounded-3xl p-6 shadow-2xl backdrop-blur-xl transition-colors duration-300">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-lg font-semibold">Présence du jour</h2>
 
-        <motion.article
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="rounded-2xl border border-white/10 bg-white/10 p-4 text-center backdrop-blur-xl"
-        >
-          <p className="text-xs text-slate-300">Retards</p>
-          <p className="mt-2 text-2xl font-bold text-amber-400">{lateCount}</p>
-        </motion.article>
-
-        <motion.article
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="rounded-2xl border border-white/10 bg-white/10 p-4 text-center backdrop-blur-xl"
-        >
-          <p className="text-xs text-slate-300">Absents</p>
-          <p className="mt-2 text-2xl font-bold text-red-400">{absentCount}</p>
-        </motion.article>
-      </section>
-
-      <section className="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-2">
-        {loading && (
-          <div className="text-slate-300">Chargement de l’historique...</div>
-        )}
-
-        {!loading && items.length === 0 && (
-          <div className="text-slate-300">Aucune présence enregistrée pour le moment.</div>
-        )}
-
-        {!loading &&
-          items.map((item, index) => (
-            <motion.article
-              key={item.id}
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.08 + index * 0.05 }}
-              className="rounded-[1.75rem] border border-white/10 bg-white/10 p-5 backdrop-blur-2xl"
+            <button
+              onClick={() => void loadHistory()}
+              className="user-theme-button rounded-xl px-4 py-2 text-sm font-semibold transition hover:opacity-90"
             >
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                <div>
-                  <div className="flex items-center gap-2 text-slate-300">
-                    <CalendarDays size={16} />
-                    <p className="text-sm capitalize">{formatDate(item.attendanceDate)}</p>
-                  </div>
+              Actualiser
+            </button>
+          </div>
 
-                  <div className="mt-4 grid grid-cols-2 gap-6">
+          {loading ? (
+            <div className="user-theme-muted">Chargement...</div>
+          ) : todayAttendance ? (
+            <div className="grid gap-4 md:grid-cols-4">
+              <div className="user-theme-soft rounded-2xl border p-4 transition-colors duration-300">
+                <p className="user-theme-muted text-sm">Date</p>
+                <p className="mt-2 font-semibold">
+                  {formatDate(todayAttendance.attendanceDate)}
+                </p>
+              </div>
+
+              <div className="user-theme-soft rounded-2xl border p-4 transition-colors duration-300">
+                <p className="user-theme-muted text-sm">Heure d’arrivée</p>
+                <p className="mt-2 font-semibold">
+                  {formatTime(todayAttendance.checkInTime)}
+                </p>
+              </div>
+
+              <div className="user-theme-soft rounded-2xl border p-4 transition-colors duration-300">
+                <p className="user-theme-muted text-sm">Statut</p>
+                <p className="mt-2 font-semibold">
+                  {getStatusLabel(todayAttendance.status)}
+                </p>
+              </div>
+
+              <div className="user-theme-soft rounded-2xl border p-4 transition-colors duration-300">
+                <p className="user-theme-muted text-sm">Retard</p>
+                <p className="mt-2 font-semibold">
+                  {todayAttendance.lateMinutes} min
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="user-theme-soft rounded-2xl border p-4 transition-colors duration-300">
+              Aucune présence enregistrée pour aujourd’hui.
+            </div>
+          )}
+        </section>
+
+        <section className="user-theme-card rounded-3xl p-6 shadow-2xl backdrop-blur-xl transition-colors duration-300">
+          <h2 className="mb-4 text-lg font-semibold">Historique récent</h2>
+
+          {loading ? (
+            <div className="user-theme-muted">
+              Chargement de l’historique...
+            </div>
+          ) : history.length === 0 ? (
+            <div className="user-theme-soft rounded-2xl border p-4 transition-colors duration-300">
+              Aucun historique disponible.
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {history.map((item) => (
+                <div
+                  key={item.id}
+                  className="user-theme-soft rounded-2xl border p-4 transition-colors duration-300"
+                >
+                  <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <div>
-                      <p className="text-xs text-slate-400">Entrée</p>
-                      <p className="mt-1 text-lg font-semibold text-white">
+                      <p className="user-theme-muted text-sm">Date</p>
+                      <p className="mt-1 font-semibold">
+                        {formatDate(item.attendanceDate)}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="user-theme-muted text-sm">Heure</p>
+                      <p className="mt-1 font-semibold">
                         {formatTime(item.checkInTime)}
                       </p>
                     </div>
 
                     <div>
-                      <p className="text-xs text-slate-400">Sortie</p>
-                      <p className="mt-1 text-lg font-semibold text-white">
-                        {formatTime(item.checkOutTime)}
+                      <p className="user-theme-muted text-sm">Retard</p>
+                      <p className="mt-1 font-semibold">
+                        {item.lateMinutes} min
                       </p>
+                    </div>
+
+                    <div>
+                      <p className="user-theme-muted text-sm">Statut</p>
+                      <span
+                        className={`mt-2 inline-flex rounded-full border px-3 py-1 text-xs font-semibold ${getStatusClasses(
+                          item.status
+                        )}`}
+                      >
+                        {getStatusLabel(item.status)}
+                      </span>
                     </div>
                   </div>
                 </div>
-
-                <div className="sm:text-right">
-                  <div className="flex items-center gap-2 text-slate-400 sm:justify-end">
-                    <Clock3 size={15} />
-                    <span className="text-xs">Pointage</span>
-                  </div>
-
-                  <span
-                    className={`mt-4 inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
-                      item.status === 'present'
-                        ? 'bg-emerald-500/15 text-emerald-400'
-                        : item.status === 'late'
-                        ? 'bg-amber-500/15 text-amber-400'
-                        : 'bg-red-500/15 text-red-400'
-                    }`}
-                  >
-                    {labelStatus(item.status)}
-                  </span>
-                </div>
-              </div>
-
-              {item.status === 'present' && (
-                <div className="mt-4 flex items-center gap-2 text-sm text-emerald-400">
-                  <CheckCircle2 size={16} />
-                  <span>Présence enregistrée avec succès</span>
-                </div>
-              )}
-
-              {item.status === 'late' && (
-                <div className="mt-4 text-sm text-amber-400">
-                  Retard : {item.lateMinutes} minute(s)
-                </div>
-              )}
-            </motion.article>
-          ))}
+              ))}
+            </div>
+          )}
+        </section>
       </section>
     </UserLayout>
   )

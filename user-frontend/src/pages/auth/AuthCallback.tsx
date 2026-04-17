@@ -1,57 +1,66 @@
 import { useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { motion } from 'motion/react'
-import { useToast } from '../../hooks/useToast'
 import { useAuth } from '../../hooks/useAuth'
-import { fetchCurrentUser } from '../../services/auth'
-import LoadingLogo from '../../components/ui/LoadingLogo'
+import { useToast } from '../../hooks/useToast'
+import { fetchMyProfile } from '../../services/profile'
 
 export default function AuthCallback() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { showToast } = useToast()
   const { setAuthenticatedUser } = useAuth()
+  const { showToast } = useToast()
 
   useEffect(() => {
-    const bootstrapAuth = async () => {
+    const handleAuthCallback = async () => {
       const token = searchParams.get('token')
-      const error = searchParams.get('error')
-
-      if (error) {
-        showToast('Connexion Google échouée', 'error')
-        navigate('/')
-        return
-      }
+      const role = searchParams.get('role')
 
       if (!token) {
-        showToast('Token manquant', 'error')
+        showToast('Token de connexion manquant', 'error')
         navigate('/')
         return
       }
 
       try {
-        const { user } = await fetchCurrentUser(token)
-        setAuthenticatedUser(user, token)
-        showToast('Connexion Google réussie', 'success')
-        navigate('/scan')
-      } catch {
-        showToast('Session Google invalide', 'error')
+        const data = await fetchMyProfile(token)
+        setAuthenticatedUser(data.user, token)
+
+        if (role === 'user') {
+          navigate('/home')
+          return
+        }
+
+        navigate('/')
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : 'Erreur de connexion'
+        showToast(message, 'error')
         navigate('/')
       }
     }
 
-    void bootstrapAuth()
+    void handleAuthCallback()
   }, [navigate, searchParams, setAuthenticatedUser, showToast])
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-950 px-4 text-white">
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md rounded-3xl border border-white/10 bg-white/5 p-8 text-center shadow-2xl backdrop-blur-xl"
-      >
-        <LoadingLogo label="Connexion en cours..." />
-      </motion.div>
+    <main className="user-theme-bg flex min-h-screen items-center justify-center px-4 transition-colors duration-300">
+      <div className="user-theme-card w-full max-w-md rounded-3xl p-8 text-center shadow-2xl backdrop-blur-xl transition-colors duration-300">
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500 text-2xl font-bold text-slate-950">
+          TT
+        </div>
+
+        <h1 className="text-2xl font-bold">Connexion en cours...</h1>
+        <p className="user-theme-muted mt-2 text-sm">
+          Vérification de ton compte Google et préparation de ton espace utilisateur.
+        </p>
+
+        <div className="mt-6 flex items-center justify-center gap-3">
+          <span className="flex h-6 w-6 animate-spin items-center justify-center rounded-full border-2 border-current/20 border-t-current">
+            <span className="text-[10px] font-bold">TT</span>
+          </span>
+          <span className="user-theme-muted text-sm">Patiente un instant</span>
+        </div>
+      </div>
     </main>
   )
 }
