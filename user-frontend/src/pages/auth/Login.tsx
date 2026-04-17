@@ -1,7 +1,7 @@
 import { motion } from 'motion/react'
 import icon from '../../assets/icon.png'
 
-const BACKEND_URL = 'http://localhost:3333'
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
 
 export default function Login() {
   const handleGoogleLogin = () => {
