@@ -1,4 +1,8 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL.trim()
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL?.trim()
+
+if (!API_BASE_URL) {
+  throw new Error('VITE_API_BASE_URL n’est pas défini dans les variables d’environnement')
+}
 
 export type BackendUser = {
   id: number
