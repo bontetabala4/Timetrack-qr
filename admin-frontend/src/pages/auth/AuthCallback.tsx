@@ -37,7 +37,7 @@ export default function AuthCallback() {
       }
 
       try {
-        const response = await fetch('http://localhost:3333/api/auth/me', {
+        const response = await fetch('/api/auth/me', {
           headers: {
             Accept: 'application/json',
             Authorization: `Bearer ${token}`,
