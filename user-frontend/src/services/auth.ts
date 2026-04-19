@@ -1,4 +1,5 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL?.trim()
+const API_BASE_URL = 
+import.meta.env.VITE_API_BASE_URL?.trim()
 
 export type BackendUser = {
   id: number
@@ -87,7 +88,7 @@ export async function updateMyProfile(
 }
 
 
-export async function fetchCurrentUser(token: string): Promise<MeResponse> {
+export async function fetchCurrentUser(token:string) {
   const response = await fetch(`${API_BASE_URL}/auth/me`, {
     headers: {
       Accept: 'application/json',
@@ -98,7 +99,7 @@ export async function fetchCurrentUser(token: string): Promise<MeResponse> {
   const data = await response.json()
 
   if (!response.ok) {
-    throw new Error(data?.message || 'Impossible de récupérer le profil')
+    throw new Error(data?.message || 'Erreur utilisateur')
   }
 
   return data

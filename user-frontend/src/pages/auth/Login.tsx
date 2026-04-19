@@ -10,7 +10,7 @@ export default function Login() {
       return
     }
 
-    window.location.href = `${API_BASE_URL}/api/auth/google/redirect`
+    window.location.href = `${API_BASE_URL}/auth/google/redirect`
   }
 
   return (
