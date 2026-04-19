@@ -1,16 +1,16 @@
 import { motion } from 'motion/react'
 import icon from '../../assets/icon.png'
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL?.trim()
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL?.trim()
 
 export default function Login() {
   const handleGoogleLogin = () => {
-    if (!BACKEND_URL) {
-      alert('VITE_BACKEND_URL est manquant. Vérifie les variables Netlify.')
+    if (!API_BASE_URL) {
+      alert('VITE_API_BASE_URL est manquant. Vérifie les variables Netlify.')
       return
     }
 
-    window.location.href = `${BACKEND_URL}/api/auth/google/redirect`
+    window.location.href = `${API_BASE_URL}/api/auth/google/redirect`
   }
 
   return (
@@ -82,9 +82,9 @@ export default function Login() {
           </p>
         </div>
 
-        {!BACKEND_URL && (
+        {!API_BASE_URL && (
           <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-300">
-            Variable manquante : <strong>VITE_BACKEND_URL</strong>
+            Variable manquante : <strong>VITE_API_BASE_URL</strong>
           </div>
         )}
       </motion.section>
